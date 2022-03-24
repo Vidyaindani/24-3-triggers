@@ -1,0 +1,86 @@
+SQL> alter table emp add sal number(15);
+
+Table altered.
+
+SQL> select *from emp;
+
+     EMPID EMPNAME         DOB             PHNO JOINDATE
+         SAL
+---------- --------------- --------- ---------- --------- ----------
+         1 swamy           09-JUN-20   70368616 09-JUN-20
+         2 vizzu           19-APR-00   81793829 26-DEC-20
+         3 bhuvu           15-MAR-01   73963222 25-NOV-20
+         4 riya            09-JUN-20   80745561 26-DEC-20
+         5 riyasri         16-JAN-21   83744561 01-JAN-21
+
+SQL> update emp set sal=50000 where empid=1;
+
+1 row updated.
+
+SQL> update emp set sal=25000 where empid=2;
+
+1 row updated.
+
+SQL> update emp set sal=20000 where empid=3;
+
+1 row updated.
+
+SQL> update emp set sal=30000 where empid=4;
+
+1 row updated.
+
+SQL> update emp set sal=60000 where empid=5;
+
+1 row updated.
+
+SQL> select *from emp;
+
+     EMPID EMPNAME         DOB             PHNO JOINDATE         SAL
+---------- --------------- --------- ---------- --------- ----------
+         1 swamy           09-JUN-20   70368616 09-JUN-20      50000
+         2 vizzu           19-APR-00   81793829 26-DEC-20      25000
+         3 bhuvu           15-MAR-01   73963222 25-NOV-20      20000
+         4 riya            09-JUN-20   80745561 26-DEC-20      30000
+         5 riyasri         16-JAN-21   83744561 01-JAN-21      60000
+SQL> create trigger dsal
+  2  before update on emp
+  3  for each row
+  4  when(new.empid>1)
+  5  declare
+  6  dbal int;
+  7  begin
+  8  dbal:=:new.sal-:old.sal;
+  9  dbms_output.put_line('old sal:'||:old.sal);
+ 10  dbms_output.put_line('new sal:'||:new.sal);
+ 11  dbms_output.put_line('balance sal:'||dbal);
+ 12  end;
+ 13  /
+
+Trigger created.
+
+SQL> declare
+  2  subs int;
+  3  begin
+  4  update emp set sal=sal+2500;
+  5  if sql%notfound then
+  6  dbms_output.put_line('no sal update');
+  7  elsif sql%found then
+  8  subs:=sql%rowcount;
+  9  dbms_output.put_line(subs||'student fees updated');
+ 10  end if;
+ 11  end;
+ 12  /
+
+PL/SQL procedure successfully completed.
+
+SQL> select *from emp;
+
+     EMPID EMPNAME         DOB             PHNO JOINDATE         SAL
+---------- --------------- --------- ---------- --------- ----------
+         1 swamy           09-JUN-20   70368616 09-JUN-20      52500
+         2 vizzu           19-APR-00   81793829 26-DEC-20      27500
+         3 bhuvu           15-MAR-01   73963222 25-NOV-20      22500
+         4 riya            09-JUN-20   80745561 26-DEC-20      32500
+         5 riyasri         16-JAN-21   83744561 01-JAN-21      62500
+
+SQL>
